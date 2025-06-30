@@ -6,7 +6,6 @@
     <title>Système de Distribution des Jetons d'Examen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
@@ -35,13 +34,12 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
     <header class="gradient-bg text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
                     <i class="fas fa-graduation-cap text-3xl"></i>
-                    <h1 class="text-2xl font-bold">UNIVERSITÉ ESPOR D'AFRIQUE</h1>
+                    <h1 class="text-2xl font-bold">UNIVERSITÉ DE [NOM]</h1>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">
                     <span class="text-sm font-medium">Service des Examens</span>
@@ -50,7 +48,6 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Système de Distribution des Jetons d'Examen</h2>
@@ -58,7 +55,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <!-- Student Card -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                 <div class="p-6">
                     <div class="flex justify-center mb-4">
@@ -74,7 +70,6 @@
                 </div>
             </div>
 
-            <!-- Admin Card -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                 <div class="p-6">
                     <div class="flex justify-center mb-4">
@@ -90,7 +85,6 @@
                 </div>
             </div>
 
-            <!-- QR Scanner Card -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                 <div class="p-6">
                     <div class="flex justify-center mb-4">
@@ -107,7 +101,6 @@
             </div>
         </div>
 
-        <!-- Benefits Section -->
         <div class="bg-white rounded-xl shadow-md p-8 mb-12">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Avantages de Notre Solution</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -136,7 +129,6 @@
         </div>
     </main>
 
-    <!-- Student Modal -->
     <div id="studentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
             <div class="p-6">
@@ -196,7 +188,6 @@
         </div>
     </div>
 
-    <!-- Admin Modal -->
     <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
             <div class="p-6">
@@ -235,7 +226,147 @@
                                 <p class="text-2xl font-bold text-green-600" id="eligibleStudents">0</p>
                             </div>
                         </div>
-                        
-                        <div class{"ok":false,"message":"terminated"}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scannerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">Scanner de Jeton QR</h3>
+                    <button onclick="toggleScannerModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="flex justify-center items-center h-48 bg-gray-200 rounded-lg mb-4">
+                    <p class="text-gray-500">Zone du scanner QR (nécessite une librairie de scanner)</p>
+                </div>
+                
+                <button class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                    Démarrer le Scan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour basculer la visibilité d'une modale
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden'); // Ajoute ou retire la classe 'hidden'
+        }
+
+        // Fonctions spécifiques pour chaque modale
+        function toggleStudentModal() {
+            toggleModal('studentModal');
+            // Réinitialiser le formulaire étudiant et les messages à chaque ouverture/fermeture
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentPin').value = '';
+            document.getElementById('studentResult').classList.add('hidden');
+            document.getElementById('eligibleMessage').classList.add('hidden');
+            document.getElementById('notEligibleMessage').classList.add('hidden');
+            document.getElementById('studentQrCode').innerHTML = ''; // Nettoyer l'ancien QR code
+        }
+
+        function toggleAdminModal() {
+            toggleModal('adminModal');
+            // Réinitialiser le formulaire admin
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminDashboard').classList.add('hidden'); // Cacher le tableau de bord
+        }
+
+        function toggleScannerModal() {
+            toggleModal('scannerModal');
+            // Pas de réinitialisation spécifique pour le scanner pour l'instant
+        }
+
+        // --- Fonctions de simulation (seront remplacées par des appels API plus tard) ---
+
+        // Simulation de la vérification d'éligibilité
+        function checkEligibility() {
+            const studentId = document.getElementById('studentId').value;
+            const studentPin = document.getElementById('studentPin').value;
+            const studentResultDiv = document.getElementById('studentResult');
+            const eligibleMessageDiv = document.getElementById('eligibleMessage');
+            const notEligibleMessageDiv = document.getElementById('notEligibleMessage');
+            const studentQrCodeDiv = document.getElementById('studentQrCode');
+
+            // Afficher le bloc de résultats
+            studentResultDiv.classList.remove('hidden');
+            eligibleMessageDiv.classList.add('hidden');
+            notEligibleMessageDiv.classList.add('hidden');
+            studentQrCodeDiv.innerHTML = ''; // Nettoyer le QR code précédent
+
+            // Logique de simulation: L'étudiant "12345" avec le PIN "0000" est éligible
+            if (studentId === '12345' && studentPin === '0000') {
+                eligibleMessageDiv.classList.remove('hidden');
+                // Simuler la génération d'un jeton (sera un appel au backend réel)
+                const tokenData = `Jeton-${studentId}-${Date.now()}`;
+                // Pour l'instant, on affichera juste le texte du jeton.
+                // Pour un VRAI QR code, vous auriez besoin d'une bibliothèque comme qrcode.js ici:
+                // if (typeof QRCode !== 'undefined') {
+                //     new QRCode(studentQrCodeDiv, tokenData);
+                // } else {
+                //     studentQrCodeDiv.innerHTML = `<p class="text-sm font-mono break-words">Code du jeton: ${tokenData}</p><p class="text-red-500">Lib qrcode.js non chargée!</p>`;
+                // }
+                studentQrCodeDiv.innerHTML = `<p class="text-sm font-mono break-words">Code du jeton: ${tokenData}</p>`;
+
+            } else {
+                notEligibleMessageDiv.classList.remove('hidden');
+            }
+        }
+
+        // Simulation de la génération de jeton (actuellement combinée avec checkEligibility pour l'exemple)
+        function generateToken() {
+            alert("Le jeton a été 'téléchargé' ou est affiché ci-dessus. Dans un vrai système, un PDF ou une image serait généré.");
+            // Logique pour réellement télécharger un fichier ou envoyer un email ici.
+        }
+
+        // Simulation de la connexion administrateur
+        function adminLogin() {
+            const adminUsername = document.getElementById('adminUsername').value;
+            const adminPassword = document.getElementById('adminPassword').value;
+            const adminDashboard = document.getElementById('adminDashboard');
+            const tokensGenerated = document.getElementById('tokensGenerated');
+            const eligibleStudents = document.getElementById('eligibleStudents');
+
+            // Logique de simulation: Admin "admin" avec le mot de passe "password"
+            if (adminUsername === 'admin' && adminPassword === 'password') {
+                adminDashboard.classList.remove('hidden');
+                // Simuler des données pour le tableau de bord
+                tokensGenerated.textContent = Math.floor(Math.random() * 1000); // Nombre aléatoire
+                eligibleStudents.textContent = Math.floor(Math.random() * 500); // Nombre aléatoire
+                alert('Connexion administrateur réussie !');
+            } else {
+                alert('Nom d\'utilisateur ou mot de passe incorrect.');
+                adminDashboard.classList.add('hidden');
+            }
+        }
+
+        // --- Optionnel: Chargement dynamique de la bibliothèque QR Code ---
+        // Décommenter si vous souhaitez utiliser qrcode.js.
+        // N'oubliez pas d'ajouter <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+        // dans le <head> ou juste avant votre script principal si vous voulez qu'il soit disponible immédiatement.
+        /*
+        function loadQrCodeLibrary() {
+            if (typeof QRCode === 'undefined') { // Vérifie si la bibliothèque n'est pas déjà chargée
+                const script = document.createElement('script');
+                script.src = "https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js";
+                script.onload = () => {
+                    console.log("qrcode.js chargé.");
+                    // Ici, vous pouvez appeler une fonction qui générera un QR code si nécessaire après le chargement
+                };
+                document.head.appendChild(script);
+            }
+        }
+        // Appelez cette fonction au chargement de la page si vous prévoyez d'utiliser les QR codes
+        // window.onload = loadQrCodeLibrary;
+        */
+    </script>
 </body>
 </html>
